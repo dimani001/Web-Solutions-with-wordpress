@@ -370,6 +370,7 @@ sudo chown apache:apache /var/www/html/wp-config.php
 
 * Visit: `http://<wordpress-public-ip>`
 * Follow the UI to configure site title, admin login, password, etc.
+![wordpress login](https://github.com/user-attachments/assets/5893e0b1-5f32-4797-ac32-d687c8feb139)
 
 
 ## Additional Notes:
@@ -391,3 +392,4 @@ sudo chown apache:apache /var/www/html/wp-config.php
 Your RHEL-based WordPress server with MySQL backend and LVM-backed storage is now up and running.
 
 Customize your new site — maybe start with a stunning landing page for **Hairs by Dimani** 
+![Screenshot (271)](https://github.com/user-attachments/assets/295b6a44-17e1-4574-b569-38736ae581f4)
