@@ -1,6 +1,6 @@
 **Project Title: Web Solutions with WordPress (RHEL 9 + LVM + EBS + Apache + MySQL)**
 
-### 🗓 Prerequisites
+###  Prerequisites
 * AWS account
 * SSH Key Pair
 * Basic knowledge of EC2, volumes, and Linux commands
@@ -28,6 +28,8 @@
 
   * Allow SSH (port 22)
   * Allow MySQL/Aurora (port 3306) from **WordPress server's private IP only or 0.0.0.0/0**
+    
+![instances](https://github.com/user-attachments/assets/8ed4077c-d596-4a87-b2b3-23f593bc1c17)
 
 
 ##  Step Two: Create & Attach EBS Volumes
@@ -37,6 +39,7 @@
 * Go to **Elastic Block Store > Volumes**
 * Create **6 volumes**, each **10 GB**, type: `gp2`
 * Availability Zone must match EC2 instances
+![EBS Volumes](https://github.com/user-attachments/assets/3289bc8c-e8b4-42a0-b50a-d5cf1d6c5898)
 
 ###  2.2 Attach Volumes
 
@@ -69,6 +72,7 @@ ssh -i your-key.pem ec2-user@<wordpress-public-ip>
 lsblk
 ```
 - Use **df -h ** to see all mounted drives and free spaces
+![list of all disks](https://github.com/user-attachments/assets/9ab10e26-d721-4fb2-baab-9f9b8cc18e0e)
 
 - To create a single partition on each of the 3 disks (/dev/nvme1n1, /dev/nvme2n1, /dev/nvme3n1) using gdisk, follow the interactive steps for each disk.
 
@@ -80,6 +84,7 @@ sudo gdisk /dev/nvme2n1
 sudo gdisk /dev/nvme3n1
 ```
 Type "n"  for new partition,<enter>x4 to accept default partition number,default first sector, default last sector (use entire disk), and default type (Linux filesystem). Then,type "w" to Write changes to disk and lastly, type "y" to confirm write.
+![disk partitioning](https://github.com/user-attachments/assets/d45d22db-c77a-403e-b80c-c412650a7bb5)
 
 - Use the lsblk utility to see all newly created partitions for the 3 volumnes
 
@@ -100,6 +105,8 @@ Once done, you can verify the physical volumes with:
 ```bash
 sudo pvs
 ```
+![pvs created](https://github.com/user-attachments/assets/e5de43c0-7fbc-4b9d-a389-2471947a0df8)
+
 - Create a Volume Group called webdata-vg using the three physical volumes.
 
 ```bash
@@ -110,6 +117,8 @@ Verify the Volume Group:
 ```bash
 sudo vgs
 ```
+![vgs created](https://github.com/user-attachments/assets/93d7f9ec-bfb7-4759-b882-dfe310210654)
+
 - Create two logical volumes of 14G each, assuming your total volume group (webdata-vg) size is around 28G.
 
 ```bash
@@ -185,6 +194,7 @@ sudo systemctl reload daemon
 ```bash
 df -h
 ```
+![LVM volumes mounted](https://github.com/user-attachments/assets/c65c8c16-2993-4907-a151-3f909bb33308)
 
 ##  Step Four: Setup LVM on DB Server (Repeat Step Three)
 
@@ -219,6 +229,7 @@ php -v             # Check PHP version
 sudo systemctl enable httpd
 sudo systemctl start httpd
 ```
+![apache HTTP server running](https://github.com/user-attachments/assets/5b5267d3-b5f1-4830-a8b7-e5d0a3ff637c)
 
 ###  Install PHP:
 
@@ -259,6 +270,7 @@ sudo chown apache:apache /var/www/html/info.php
 ```
 
 Visit: `http://<wordpress-public-ip>/info.php`
+![infio php web browser](https://github.com/user-attachments/assets/fd2631e3-a9ef-485f-9cb4-00beba54cf8c)
 
 
 ###  Install WordPress:
@@ -301,6 +313,7 @@ FLUSH PRIVILEGES;
 ```bash
  SHOW DATABASES;
  ```
+![wordpress_db created](https://github.com/user-attachments/assets/3ee532aa-8623-41bb-8839-9306ff85f139)
 
 
 ### Troubleshooting Tips:
@@ -324,6 +337,8 @@ sudo yum install -y mysql-client
 ```bash
 sudo mysql -u myuser -p -h (your database server ip address)
 ```
+![mysql client connect](https://github.com/user-attachments/assets/f5b8c8dc-1460-4d8a-aa7f-bb5755cbd9aa)
+
 Now that you have successfully setup and configured mysql and connected to it remotely from your webserver, it is essential we set up wordpress to do the same.
 - visit your-ip-address/wordpress in your web browser and you should get the same result as below;
 
